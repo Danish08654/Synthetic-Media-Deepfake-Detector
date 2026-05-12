@@ -32,16 +32,6 @@ FFT + XceptionNet → REAL / FAKE Prediction
 
 ---
 
-# Load Chrome Extension
-
-Open chrome://extensions
-Enable Developer Mode
-Click Load Unpacked
-Select the extension/ folder
-
----
-
-
 #  Testing
 
 Start Flask API
@@ -67,7 +57,6 @@ Social Media Moderation
 Digital Forensics
 
 ---
-
 
 
 # Author
