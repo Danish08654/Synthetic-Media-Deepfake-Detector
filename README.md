@@ -68,6 +68,8 @@ Digital Forensics
 
 ---
 
-👨‍💻 Author
+
+
+# Author
 
 Danish Zulfiqar
