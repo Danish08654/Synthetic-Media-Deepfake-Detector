@@ -49,3 +49,19 @@ Celeb-DF
 DFDC
 
 ---
+
+---
+
+# Use Case
+Trust & Safety
+Fake Media Detection
+Social Media Moderation
+Digital Forensics
+
+---
+
+# Author
+
+Danish Zulfiqar
+
+---
