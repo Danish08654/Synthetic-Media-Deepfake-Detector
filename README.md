@@ -2,7 +2,7 @@
 
 AI-powered system for detecting deepfake images, videos, and synthetic media using deep learning and frequency-domain analysis.
 
-##  Features
+#  Features
 
 - Deepfake face detection
 - FFT-based frequency analysis
@@ -13,7 +13,7 @@ AI-powered system for detecting deepfake images, videos, and synthetic media usi
 
 ---
 
-##  Tech Stack
+#  Tech Stack
 
 - PyTorch
 - XceptionNet
@@ -24,9 +24,6 @@ AI-powered system for detecting deepfake images, videos, and synthetic media usi
 
 ---
 
-##  Workflow
-
-```text
 Website Image → Chrome Extension → Flask API →
 FFT + XceptionNet → REAL / FAKE Prediction
 
@@ -47,8 +44,6 @@ Extension scans and predicts
 FaceForensics++
 Celeb-DF
 DFDC
-
----
 
 ---
 
