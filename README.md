@@ -24,7 +24,10 @@ AI-powered system for detecting deepfake images, videos, and synthetic media usi
 
 ---
 
+# Working
+
 Website Image → Chrome Extension → Flask API →
+
 FFT + XceptionNet → REAL / FAKE Prediction
 
 ---
@@ -32,28 +35,41 @@ FFT + XceptionNet → REAL / FAKE Prediction
 #  Testing
 
 Start Flask API
+
 Load extension
+
 Open a webpage with images
+
 Extension scans and predicts
+
 🟢 REAL
+
 🔴 FAKE
 
 ---
 
 #  Datasets
+
 FaceForensics++
+
 Celeb-DF
+
 DFDC
 
 ---
 
 # Use Case
+
 Trust & Safety
+
 Fake Media Detection
+
 Social Media Moderation
+
 Digital Forensics
 
 ---
+
 
 # Author
 
