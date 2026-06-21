@@ -49,16 +49,3 @@ Celeb-DF
 DFDC
 
 ---
-
-#  Applications
-Trust & Safety
-Fake Media Detection
-Social Media Moderation
-Digital Forensics
-
----
-
-
-# Author
-
-Danish Zulfiqar
