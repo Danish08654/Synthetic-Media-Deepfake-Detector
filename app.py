@@ -9,9 +9,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from PIL import Image
 
-from model.xception import XceptionDetector, load_model
-from model.fft_utils import extract_fft_features
-from utils.preprocessing import preprocess_image_bytes, extract_video_frames
+from xception import XceptionDetector, load_model
+from fft_utils import extract_fft_features
+from preprocessing import preprocess_image_bytes, extract_video_frames
 
 app  = Flask(__name__)
 CORS(app)
