@@ -9,3 +9,4 @@ opencv-python-headless
 scikit-learn
 librosa
 joblib
+plotly
