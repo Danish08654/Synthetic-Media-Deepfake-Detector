@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 280px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #1a1a2e;
+      color: white;
+    }
+    .header {
+      padding: 16px;
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      text-align: center;
+    }
+    .header h1 { font-size: 15px; font-weight: 600; }
+    .header p  { font-size: 11px; opacity: 0.85; margin-top: 3px; }
+    .body  { padding: 14px; }
+    .status {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .status span { color: #3498db; font-weight: 600; }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button:hover { background: #c0392b; }
+    button.secondary {
+      background: #2c3e50;
+      font-size: 12px;
+    }
+    .legend { margin-top: 12px; font-size: 11px; color: #aaa; }
+    .legend div { margin: 4px 0; }
+    .footer {
+      padding: 8px 14px;
+      font-size: 10px;
+      color: #555;
+      border-top: 1px solid #2c3e50;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔍 Deepfake Detector</h1>
+    <p>AI-powered media verification</p>
+  </div>
+
+  <div class="body">
+    <div class="status" id="status">
+      Status: <span>Ready</span>
+    </div>
+
+    <button id="scanBtn">🔍 Scan This Page</button>
+    <button class="secondary" id="clearBtn">✕ Clear Badges</button>
+
+    <div class="legend">
+      <div>🟢 Real — Low fake probability</div>
+      <div>🔴 AI-Generated — High fake probability</div>
+      <div>🟡 Uncertain — Inconclusive result</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    API: localhost:5000 · Hybrid CNN+FFT Detection
+  </div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+
+    document.getElementById('scanBtn').addEventListener('click', () => {
+      statusEl.innerHTML = 'Status: <span>Scanning...</span>';
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        chrome.tabs.sendMessage(
+          tabs[0].id,
+          { action: 'scan_page' },
+          resp => {
+            if (resp) {
+              statusEl.innerHTML =
+                `Status: <span>Found ${resp.count} images</span>`;
+            }
+          }
+        );
+      });
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        chrome.scripting.executeScript({
+          target: { tabId: tabs[0].id },
+          func:   () => {
+            document.querySelectorAll('.deepfake-badge').forEach(b => b.remove());
+            document.querySelectorAll('[data-deepfake-checked]').forEach(
+              el => delete el.dataset.deepfakeChecked
+            );
+          }
+        });
+        statusEl.innerHTML = 'Status: <span>Cleared</span>';
+      });
+    });
+  </script>
+</body>
+</html>
