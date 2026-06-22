@@ -34,7 +34,7 @@ DEVICE     = 'cpu'
 #  HUGGING FACE MODEL SETUP 
 # =========================================================
 
-MODEL_URL = "https://huggingface.co/Rd786/deepfake-xception-model"
+MODEL_URL = "https://huggingface.co/Rd786/deepfake-xception-model/tree/main"
 MODEL_PATH = os.path.join(BASE_DIR, "xception_deepfake.pth")
 
 
