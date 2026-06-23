@@ -4,9 +4,9 @@ import plotly.graph_objects as go
 import numpy as np
 import torch
 
-from model.xception import load_model
-from model.fft_utils import extract_fft_features
-from utils.preprocessing import preprocess_image_bytes, extract_video_frames
+from backend.model.xception import XceptionDetector, load_model
+from backend.model.fft_utils import extract_fft_features
+from backend.utils.preprocessing import preprocess_image_bytes, extract_video_frames
 
 import tempfile
 import io
