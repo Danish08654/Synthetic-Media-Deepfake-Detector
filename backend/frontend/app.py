@@ -7,7 +7,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
 sys.path.append(PROJECT_ROOT)
 
-# - IMPORTS -
+# ---------------- IMPORTS ----------------
 import streamlit as st
 from PIL import Image
 import plotly.graph_objects as go
@@ -26,6 +26,8 @@ st.set_page_config(
     page_icon="🔍",
     layout="wide"
 )
+
+st.title("🔍 Synthetic Media & Deepfake Detector")
 
 DEVICE = "cpu"
 THRESHOLD = 0.5
