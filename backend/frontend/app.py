@@ -28,6 +28,7 @@ st.set_page_config(
 )
 
 st.title("🔍 Synthetic Media & Deepfake Detector")
+st.caption("Hybrid CNN + FFT (Streamlit Cloud Ready)")
 
 DEVICE = "cpu"
 THRESHOLD = 0.5
@@ -130,10 +131,11 @@ with tab2:
 # ---------------- INFO TAB ----------------
 with tab3:
     st.markdown("""
-    ### About it's
+    ### How it works
 
     - CNN (XceptionNet) → visual artifacts detection  
     - FFT → frequency noise detection  
     - Fusion → 70% CNN + 30% FFT  
 
+    **Streamlit Cloud compatible version**
     """)
