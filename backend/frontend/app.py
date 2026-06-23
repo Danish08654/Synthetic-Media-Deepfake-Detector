@@ -1,13 +1,10 @@
 import sys
 import os
 
-# ---------------- FIX PATH (IMPORTANT) ----------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
-
 sys.path.append(PROJECT_ROOT)
 
-# ---------------- IMPORTS ----------------
 import streamlit as st
 from PIL import Image
 import plotly.graph_objects as go
@@ -20,35 +17,60 @@ from backend.model.xception import load_model
 from backend.model.fft_utils import extract_fft_features
 from backend.utils.preprocessing import preprocess_image_bytes, extract_video_frames
 
-# ---------------- CONFIG ----------------
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Deepfake Detector",
+    page_title="Deepfake Detector AI",
     page_icon="🔍",
     layout="wide"
 )
 
-st.title("🔍 Synthetic Media & Deepfake Detector")
-st.caption("Hybrid CNN + FFT (Streamlit Cloud Ready)")
+# ---------------- CUSTOM UI STYLE ----------------
+st.markdown("""
+<style>
+.main-title {
+    font-size: 40px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.subtitle {
+    text-align: center;
+    color: gray;
+    margin-bottom: 30px;
+}
+.result-box {
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+}
+.real {
+    background: linear-gradient(90deg, #00b09b, #96c93d);
+}
+.fake {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+}
+.card {
+    padding: 15px;
+    border-radius: 10px;
+    background: #f5f5f5;
+}
+</style>
+""", unsafe_allow_html=True)
 
+st.markdown('<div class="main-title">🔍 Deepfake Detection AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Hybrid CNN + FFT Analysis | Streamlit Cloud Ready</div>', unsafe_allow_html=True)
+
+# ---------------- MODEL ----------------
 DEVICE = "cpu"
 THRESHOLD = 0.5
 
-# ---------------- MODEL PATH (FIXED) ----------------
-MODEL_PATH = os.path.join(
-    PROJECT_ROOT,
-    "backend",
-    "model",
-    "xception_deepfake.pth"
-)
-
-# Debug (optional but useful)
-st.write("Model Path:", MODEL_PATH)
-st.write("Exists:", os.path.exists(MODEL_PATH))
-
-# ---------------- LOAD MODEL ----------------
+MODEL_PATH = os.path.join(PROJECT_ROOT, "backend", "model", "xception_deepfake.pth")
 cnn_model = load_model(MODEL_PATH, DEVICE)
 
-# ---------------- CORE FUNCTION ----------------
+# ---------------- PREDICTION ----------------
 def predict_image(img_bytes):
     tensor, img_array, _ = preprocess_image_bytes(img_bytes)
     tensor = tensor.to(DEVICE)
@@ -62,50 +84,63 @@ def predict_image(img_bytes):
     final_score = 0.7 * cnn_score + 0.3 * fft_norm
     prediction = "AI-Generated" if final_score >= THRESHOLD else "Real"
 
-    return {
-        "prediction": prediction,
-        "fake_probability": final_score,
-        "cnn_score": cnn_score,
-        "fft_score": fft_norm
-    }
+    return prediction, final_score, cnn_score, fft_norm
 
-# ---------------- UI ----------------
-tab1, tab2, tab3 = st.tabs(["🖼️ Image", "🎬 Video", "ℹ️ Info"])
+# ---------------- TABS ----------------
+tab1, tab2, tab3 = st.tabs(["🖼️ Image Analysis", "🎬 Video Analysis", "ℹ️ About Model"])
 
-# ---------------- IMAGE TAB ----------------
+# ================= IMAGE TAB =================
 with tab1:
-    st.subheader("Upload Image")
-    uploaded = st.file_uploader("Choose image", type=["png", "jpg", "jpeg"])
+    st.subheader("Upload Image for Analysis")
+
+    uploaded = st.file_uploader("", type=["png", "jpg", "jpeg"])
 
     if uploaded:
-        st.image(uploaded, use_container_width=True)
+        col1, col2 = st.columns([1, 1])
 
-        if st.button("Analyze Image"):
-            result = predict_image(uploaded.getvalue())
+        with col1:
+            st.image(uploaded, use_container_width=True)
 
-            st.success(result["prediction"])
+        if st.button("🔍 Analyze Image"):
+            prediction, score, cnn, fft = predict_image(uploaded.getvalue())
 
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Fake Probability", f"{result['fake_probability']:.3f}")
-            c2.metric("CNN Score", f"{result['cnn_score']:.3f}")
-            c3.metric("FFT Score", f"{result['fft_score']:.3f}")
+            is_fake = score >= THRESHOLD
 
-            fig = go.Figure(go.Indicator(
-                mode="gauge+number",
-                value=result["fake_probability"] * 100,
-                title={"text": "Fake %"},
-                gauge={"axis": {"range": [0, 100]}}
-            ))
+            with col2:
+                st.markdown(
+                    f"""
+                    <div class="result-box {'fake' if is_fake else 'real'}">
+                        {prediction}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
-            st.plotly_chart(fig, use_container_width=True)
+                st.progress(score)
 
-# ---------------- VIDEO TAB ----------------
+                c1, c2, c3 = st.columns(3)
+                c1.metric("Fake Probability", f"{score:.2f}")
+                c2.metric("CNN Score", f"{cnn:.2f}")
+                c3.metric("FFT Score", f"{fft:.2f}")
+
+                fig = go.Figure(go.Indicator(
+                    mode="gauge+number",
+                    value=score * 100,
+                    title={"text": "AI Probability (%)"},
+                    gauge={"axis": {"range": [0, 100]}}
+                ))
+
+                st.plotly_chart(fig, use_container_width=True)
+
+# ================= VIDEO TAB =================
 with tab2:
-    st.subheader("Upload Video")
-    video = st.file_uploader("Choose video", type=["mp4", "avi", "mov"])
+    st.subheader("Video Deepfake Detection")
+
+    video = st.file_uploader("", type=["mp4", "avi", "mov"])
 
     if video:
-        if st.button("Analyze Video"):
+        if st.button("🔍 Analyze Video"):
+
             tfile = tempfile.NamedTemporaryFile(delete=False)
             tfile.write(video.read())
             path = tfile.name
@@ -119,23 +154,49 @@ with tab2:
                 buf = io.BytesIO()
                 img.save(buf, format="PNG")
 
-                result = predict_image(buf.getvalue())
-                scores.append(result["fake_probability"])
+                _, score, _, _ = predict_image(buf.getvalue())
+                scores.append(score)
 
             avg_score = np.mean(scores)
             prediction = "AI-Generated" if avg_score >= THRESHOLD else "Real"
 
-            st.success(prediction)
+            st.markdown(
+                f"""
+                <div class="result-box {'fake' if avg_score >= THRESHOLD else 'real'}">
+                    {prediction}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.progress(avg_score)
+
+            st.subheader("Frame Analysis")
             st.line_chart(scores)
 
-# ---------------- INFO TAB ----------------
+# ================= INFO TAB =================
 with tab3:
+    st.subheader("Model Architecture")
+
     st.markdown("""
-    ### How it works
+    ### 🧠 How it works
 
-    - CNN (XceptionNet) → visual artifacts detection  
-    - FFT → frequency noise detection  
-    - Fusion → 70% CNN + 30% FFT  
+    **1. CNN (XceptionNet - 70%)**
+    - Detects facial blending artifacts  
+    - Learns GAN-generated inconsistencies  
 
-    **Streamlit Cloud compatible version**
+    **2. FFT Analysis (30%)**
+    - Detects frequency-level noise patterns  
+    - Finds GAN fingerprints invisible to humans  
+
+    **3. Final Fusion**
+    ```
+    Final Score = 0.7 × CNN + 0.3 × FFT
+    ```
+
+    **Output**
+    - Score ≥ 0.5 → AI Generated  
+    - Score < 0.5 → Real
     """)
+
+    st.success("Optimized for Streamlit Cloud 🚀")
