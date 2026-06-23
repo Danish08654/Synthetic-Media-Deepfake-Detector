@@ -1,13 +1,13 @@
 import sys
 import os
 
-# ---------------- FIX PATH (IMPORTANT) ----------------
+#  PATH 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
 sys.path.append(PROJECT_ROOT)
 
-# ---------------- IMPORTS ----------------
+# - IMPORTS -
 import streamlit as st
 from PIL import Image
 import plotly.graph_objects as go
@@ -26,9 +26,6 @@ st.set_page_config(
     page_icon="🔍",
     layout="wide"
 )
-
-st.title("🔍 Synthetic Media & Deepfake Detector")
-st.caption("Hybrid CNN + FFT (Streamlit Cloud Ready)")
 
 DEVICE = "cpu"
 THRESHOLD = 0.5
@@ -131,11 +128,10 @@ with tab2:
 # ---------------- INFO TAB ----------------
 with tab3:
     st.markdown("""
-    ### How it works
+    ### About it's
 
     - CNN (XceptionNet) → visual artifacts detection  
     - FFT → frequency noise detection  
     - Fusion → 70% CNN + 30% FFT  
 
-    **Streamlit Cloud compatible version**
     """)
