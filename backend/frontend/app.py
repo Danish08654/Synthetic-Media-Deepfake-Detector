@@ -19,7 +19,7 @@ from backend.utils.preprocessing import preprocess_image_bytes, extract_video_fr
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Deepfake Detector AI",
+    page_title="AI Deepfake Detector",
     page_icon="🔍",
     layout="wide"
 )
@@ -60,8 +60,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">🔍 Deepfake Detection AI</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Hybrid CNN + FFT Analysis | Streamlit Cloud Ready</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title"> AI Deepfake Detection </div>', unsafe_allow_html=True)
 
 # ---------------- MODEL ----------------
 DEVICE = "cpu"
@@ -179,7 +178,7 @@ with tab3:
     st.subheader("Model Architecture")
 
     st.markdown("""
-    ### 🧠 How it works
+    ###  How it works
 
     **1. CNN (XceptionNet - 70%)**
     - Detects facial blending artifacts  
@@ -199,4 +198,3 @@ with tab3:
     - Score < 0.5 → Real
     """)
 
-    st.success("Optimized for Streamlit Cloud 🚀")
