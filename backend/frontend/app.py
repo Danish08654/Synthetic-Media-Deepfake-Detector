@@ -1,24 +1,24 @@
 import sys
 import os
 
+# ---------------- FIX PATH (IMPORTANT) ----------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
 sys.path.append(PROJECT_ROOT)
 
+# ---------------- IMPORTS ----------------
 import streamlit as st
 from PIL import Image
 import plotly.graph_objects as go
 import numpy as np
 import torch
-
-from backend.model.xception import XceptionDetector, load_model
-from backend.model.fft_utils import extract_fft_features
-from backend.utils.preprocessing import preprocess_image_bytes, extract_video_frames
-
 import tempfile
 import io
-import os
+
+from backend.model.xception import load_model
+from backend.model.fft_utils import extract_fft_features
+from backend.utils.preprocessing import preprocess_image_bytes, extract_video_frames
 
 # ---------------- CONFIG ----------------
 st.set_page_config(
@@ -27,16 +27,26 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------------- LOAD MODEL ----------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DEVICE = "cpu"
+st.title("🔍 Synthetic Media & Deepfake Detector")
+st.caption("Hybrid CNN + FFT (Streamlit Cloud Ready)")
 
-cnn_model = load_model(
-    os.path.join(BASE_DIR, "model/xception_deepfake.pth"),
-    DEVICE
+DEVICE = "cpu"
+THRESHOLD = 0.5
+
+# ---------------- MODEL PATH (FIXED) ----------------
+MODEL_PATH = os.path.join(
+    PROJECT_ROOT,
+    "backend",
+    "model",
+    "xception_deepfake.pth"
 )
 
-THRESHOLD = 0.5
+# Debug (optional but useful)
+st.write("Model Path:", MODEL_PATH)
+st.write("Exists:", os.path.exists(MODEL_PATH))
+
+# ---------------- LOAD MODEL ----------------
+cnn_model = load_model(MODEL_PATH, DEVICE)
 
 # ---------------- CORE FUNCTION ----------------
 def predict_image(img_bytes):
@@ -50,7 +60,6 @@ def predict_image(img_bytes):
     fft_norm = min(fft_score * 2.5, 1.0)
 
     final_score = 0.7 * cnn_score + 0.3 * fft_norm
-
     prediction = "AI-Generated" if final_score >= THRESHOLD else "Real"
 
     return {
@@ -117,7 +126,6 @@ with tab2:
             prediction = "AI-Generated" if avg_score >= THRESHOLD else "Real"
 
             st.success(prediction)
-
             st.line_chart(scores)
 
 # ---------------- INFO TAB ----------------
@@ -125,8 +133,9 @@ with tab3:
     st.markdown("""
     ### How it works
 
-    - CNN (XceptionNet) → detects visual artifacts  
-    - FFT → detects frequency noise patterns  
+    - CNN (XceptionNet) → visual artifacts detection  
+    - FFT → frequency noise detection  
     - Fusion → 70% CNN + 30% FFT  
 
+    **Streamlit Cloud compatible version**
     """)
