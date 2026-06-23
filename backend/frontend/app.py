@@ -1,3 +1,11 @@
+import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+
+sys.path.append(PROJECT_ROOT)
+
 import streamlit as st
 from PIL import Image
 import plotly.graph_objects as go
